@@ -21,13 +21,13 @@ import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.ConnectorClass;
 
-@ConnectorClass(displayNameKey = "xpto.connector.display", configurationClass = xptoConfiguration.class)
-public class xptoConnector implements Connector {
+@ConnectorClass(displayNameKey = "xpto.connector.display", configurationClass = XptoConfiguration.class)
+public class XptoConnector implements Connector {
 
-    private static final Log LOG = Log.getLog(xptoConnector.class);
+    private static final Log LOG = Log.getLog(XptoConnector.class);
 
-    private xptoConfiguration configuration;
-    private xptoConnection connection;
+    private XptoConfiguration configuration;
+    private XptoConnection connection;
 
     @Override
     public Configuration getConfiguration() {
@@ -36,8 +36,8 @@ public class xptoConnector implements Connector {
 
     @Override
     public void init(Configuration configuration) {
-        this.configuration = (xptoConfiguration)configuration;
-        this.connection = new xptoConnection(this.configuration);
+        this.configuration = (XptoConfiguration)configuration;
+        this.connection = new XptoConnection(this.configuration);
     }
 
     @Override

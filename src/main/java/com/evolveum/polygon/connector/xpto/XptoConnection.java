@@ -18,13 +18,13 @@ package com.evolveum.polygon.connector.xpto;
 
 import org.identityconnectors.common.logging.Log;
 
-public class xptoConnection {
+public class XptoConnection {
 
-    private static final Log LOG = Log.getLog(xptoConnection.class);
+    private static final Log LOG = Log.getLog(XptoConnection.class);
 
-    private xptoConfiguration configuration;
+    private XptoConfiguration configuration;
 
-    public xptoConnection(xptoConfiguration configuration) {
+    public XptoConnection(XptoConfiguration configuration) {
         this.configuration = configuration;
     }
 

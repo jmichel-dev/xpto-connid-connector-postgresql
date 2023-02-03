@@ -17,10 +17,12 @@
 package com.evolveum.polygon.connector.xpto;
 
 import org.identityconnectors.common.logging.Log;
+import org.identityconnectors.framework.common.exceptions.ConnectionFailedException;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.ConnectorClass;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 @ConnectorClass(displayNameKey = "xpto.connector.display", configurationClass = XptoConfiguration.class)
@@ -30,6 +32,7 @@ public class XptoConnector implements Connector {
 
     private XptoConfiguration configuration;
     private XptoConnection connection;
+    private Connection databaseConnection;
 
     @Override
     public Configuration getConfiguration() {
@@ -40,6 +43,13 @@ public class XptoConnector implements Connector {
     public void init(Configuration configuration) {
         this.configuration = (XptoConfiguration)configuration;
         this.connection = new XptoConnection(this.configuration);
+
+        try {
+            connection.setUpConnection();
+            databaseConnection = connection.getDatabaseConnection();
+        } catch (SQLException e) {
+            throw new ConnectionFailedException(e);
+        }
     }
 
     @Override

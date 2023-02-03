@@ -21,6 +21,8 @@ import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.ConnectorClass;
 
+import java.sql.SQLException;
+
 @ConnectorClass(displayNameKey = "xpto.connector.display", configurationClass = XptoConfiguration.class)
 public class XptoConnector implements Connector {
 
@@ -44,7 +46,11 @@ public class XptoConnector implements Connector {
     public void dispose() {
         configuration = null;
         if (connection != null) {
-            connection.dispose();
+            try {
+                connection.dispose();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             connection = null;
         }
     }

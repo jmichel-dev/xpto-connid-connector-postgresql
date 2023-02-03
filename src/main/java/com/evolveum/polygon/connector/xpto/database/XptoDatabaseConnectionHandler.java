@@ -13,7 +13,7 @@ public class XptoDatabaseConnectionHandler {
 
     public XptoDatabaseConnectionHandler(XptoConfiguration configuration) { this.configuration = configuration; }
 
-    protected Connection connect() throws SQLException {
+    protected Connection databaseConnection() throws SQLException {
         String uri = "jdbc:postgresql://" +
                 configuration.getDatabaseHost() +
                 ":" + configuration.getDatabasePort() +

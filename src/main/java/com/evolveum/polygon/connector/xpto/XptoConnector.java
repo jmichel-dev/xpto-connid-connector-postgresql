@@ -21,12 +21,13 @@ import org.identityconnectors.framework.common.exceptions.ConnectionFailedExcept
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.ConnectorClass;
+import org.identityconnectors.framework.spi.operations.TestOp;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 @ConnectorClass(displayNameKey = "xpto.connector.display", configurationClass = XptoConfiguration.class)
-public class XptoConnector implements Connector {
+public class XptoConnector implements Connector, TestOp {
 
     private static final Log LOG = Log.getLog(XptoConnector.class);
 
@@ -62,6 +63,16 @@ public class XptoConnector implements Connector {
                 throw new RuntimeException(e);
             }
             connection = null;
+        }
+    }
+
+    @Override
+    public void test() {
+        try {
+            databaseConnection.isValid(5);
+            LOG.info("Test service execution finished successfully");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

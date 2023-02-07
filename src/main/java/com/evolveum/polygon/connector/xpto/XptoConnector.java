@@ -72,7 +72,7 @@ public class XptoConnector implements Connector, TestOp {
             databaseConnection.isValid(5);
             LOG.info("Test service execution finished successfully");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new ConnectionFailedException(e);
         }
     }
 }

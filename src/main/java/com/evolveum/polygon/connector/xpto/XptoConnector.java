@@ -18,26 +18,29 @@ package com.evolveum.polygon.connector.xpto;
 
 import com.evolveum.polygon.connector.xpto.entity.XptoUser;
 import com.evolveum.polygon.connector.xpto.service.XptoUserService;
+import com.evolveum.polygon.connector.xpto.utils.FilterHandler;
 import com.evolveum.polygon.connector.xpto.utils.GenericExceptionHandler;
+import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectionBrokenException;
 import org.identityconnectors.framework.common.exceptions.ConnectionFailedException;
-import org.identityconnectors.framework.common.objects.Attribute;
-import org.identityconnectors.framework.common.objects.ObjectClass;
-import org.identityconnectors.framework.common.objects.OperationOptions;
-import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.*;
+import org.identityconnectors.framework.common.objects.filter.Filter;
+import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.ConnectorClass;
 import org.identityconnectors.framework.spi.operations.CreateOp;
+import org.identityconnectors.framework.spi.operations.SearchOp;
 import org.identityconnectors.framework.spi.operations.TestOp;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 @ConnectorClass(displayNameKey = "xpto.connector.display", configurationClass = XptoConfiguration.class)
-public class XptoConnector implements Connector, TestOp, CreateOp {
+public class XptoConnector implements Connector, TestOp, CreateOp, SearchOp<Filter> {
 
     private static final Log LOG = Log.getLog(XptoConnector.class);
 
@@ -111,5 +114,26 @@ public class XptoConnector implements Connector, TestOp, CreateOp {
         }
 
         return null;
+    }
+
+    @Override
+    public FilterTranslator<Filter> createFilterTranslator(ObjectClass objectClass, OperationOptions operationOptions) {
+        return new FilterTranslator<Filter>() {
+            @Override
+            public List<Filter> translate(Filter filter) {
+                return CollectionUtil.newList(filter);
+            }
+        };
+    }
+
+    @Override
+    public void executeQuery(ObjectClass objectClass, Filter filter, ResultsHandler resultsHandler, OperationOptions operationOptions) {
+        String query = "";
+
+        if (filter != null) {
+            query = filter.accept(new FilterHandler(), "");
+            LOG.info("Query will be executed with the following filter: {0}", query);
+            LOG.info("The object class from which the filter will be executed: {0}", objectClass.getDisplayNameKey());
+        }
     }
 }

@@ -6,7 +6,7 @@ import org.identityconnectors.framework.common.objects.ResultsHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListeResultHandler implements ResultsHandler {
+public class ListResultHandler implements ResultsHandler {
     private List<ConnectorObject> objects = new ArrayList<>();
     @Override
     public boolean handle(ConnectorObject connectorObject) {

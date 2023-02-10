@@ -17,6 +17,7 @@
 package com.evolveum.polygon.connector.xpto;
 
 import com.evolveum.polygon.connector.xpto.database.XptoDatabaseConnectionHandler;
+import com.evolveum.polygon.connector.xpto.service.XptoUserService;
 import org.identityconnectors.common.logging.Log;
 
 import java.sql.Connection;
@@ -28,6 +29,7 @@ public class XptoConnection extends XptoDatabaseConnectionHandler {
 
     private XptoConfiguration configuration;
     private Connection connection;
+    private XptoUserService userService;
 
     public XptoConnection(XptoConfiguration configuration) {
         super(configuration);
@@ -35,10 +37,13 @@ public class XptoConnection extends XptoDatabaseConnectionHandler {
 
     public void setUpConnection() throws SQLException {
         connection = databaseConnection();
+        userService = new XptoUserService(connection);
         LOG.info("The database connection initialized successfully");
     }
 
     public Connection getDatabaseConnection() { return connection; }
+
+    public XptoUserService getXptoUserService() { return userService; }
 
     public void dispose() throws SQLException {
         if (connection != null) {

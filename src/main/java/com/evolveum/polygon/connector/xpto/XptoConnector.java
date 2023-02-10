@@ -36,6 +36,7 @@ import org.identityconnectors.framework.spi.operations.TestOp;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -128,12 +129,40 @@ public class XptoConnector implements Connector, TestOp, CreateOp, SearchOp<Filt
 
     @Override
     public void executeQuery(ObjectClass objectClass, Filter filter, ResultsHandler resultsHandler, OperationOptions operationOptions) {
-        String query = "";
+        String query = null;
 
         if (filter != null) {
             query = filter.accept(new FilterHandler(), "");
             LOG.info("Query will be executed with the following filter: {0}", query);
             LOG.info("The object class from which the filter will be executed: {0}", objectClass.getDisplayNameKey());
+        }
+
+        try {
+            List<XptoUser> users = new ArrayList<>();
+            if (ObjectClass.ACCOUNT.equals(objectClass)) {
+                LOG.info("initializing search service...");
+                users = userService.search(query);
+            } else {
+                throw new UnsupportedOperationException("Unknown object class " + objectClass);
+            }
+
+            if (users == null || users.isEmpty()) {
+                LOG.info("No objects returned by query.");
+
+                return;
+            }
+
+            LOG.ok("Objects found: {0}", users.size());
+
+            for (XptoUser user: users) {
+                if (user == null) return;
+
+                ConnectorObject connectorObject = user.translateToMidpointConnectorObject();
+
+                if (!resultsHandler.handle(connectorObject)) break;
+            }
+        } catch (Exception e) {
+            GenericExceptionHandler.handleGenericException(e, "Couldn't search " + objectClass + " with filter " + query + ", reason: " + e.getMessage());
         }
     }
 }

@@ -17,12 +17,19 @@ public class GenericExceptionHandler {
             throw (RuntimeException) ex;
         }
 
-        if (ex instanceof PSQLException) {
-            throw new ConnectionFailedException(message + ", Postgresql database exception occur, reason: " + ex.getMessage(), ex);
-        }
-
         if (ex instanceof SQLException) {
-            throw new ConnectionFailedException(message + ", Postgresql database exception occur, reason: " + ex.getMessage(), ex);
+            String sqlErrorCodeException = String.valueOf(((SQLException) ex).getErrorCode());
+            String sqlStateException = ((SQLException) ex).getSQLState();
+
+            switch (sqlStateException) {
+                case "23502":
+                    throw new InvalidAttributeValueException(message + ", an exception occur, reason: " + ex.getMessage());
+                case "23505":
+                    throw new AlreadyExistsException(message + ", postgresql database exception occur, reason: " + ex.getMessage());
+            }
+
+            throw new ConnectionFailedException(message + ", Postgresql database exception occur error code "
+                    +sqlErrorCodeException+", sql state "+sqlStateException+", reason: " + ex.getMessage(), ex);
         }
 
         if (ex instanceof IOException) {

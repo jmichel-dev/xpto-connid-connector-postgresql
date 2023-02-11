@@ -1,7 +1,6 @@
 package com.evolveum.polygon.connector.xpto.config;
 
 import com.evolveum.polygon.connector.xpto.utils.XptoAttributesConstants;
-import org.checkerframework.checker.units.qual.A;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.api.ConnectorFacade;
 import org.identityconnectors.framework.common.exceptions.AlreadyExistsException;

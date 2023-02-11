@@ -63,4 +63,18 @@ public class AddTest extends BaseConnectionTest {
 
         createdUid = facade.create(ObjectClass.ACCOUNT, set, null);
     }
+
+    @Test(groups = "Add Test", expectedExceptions = InvalidAttributeValueException.class)
+    public void shouldNotCreateUserWithoutTheNameId() throws Exception {
+        ConnectorFacade facade = setupConnector();
+
+        Set<Attribute> set = new HashSet<>();
+        set.add(AttributeBuilder.build(XptoAttributesConstants.XPTO_FIRST_NAME, "Joao"));
+        set.add(AttributeBuilder.build(XptoAttributesConstants.XPTO_LAST_NAME, "Santos"));
+        set.add(AttributeBuilder.build(XptoAttributesConstants.XPTO_EMAIL, "joao1@test.com"));
+        set.add(AttributeBuilder.build(OperationalAttributes.ENABLE_NAME, true));
+        set.add(AttributeBuilder.build(OperationalAttributes.PASSWORD_NAME, new GuardedString(PASSWORD.toCharArray())));
+
+        createdUid = facade.create(ObjectClass.ACCOUNT, set, null);
+    }
 }

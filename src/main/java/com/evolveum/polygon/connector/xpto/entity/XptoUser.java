@@ -4,6 +4,7 @@ import com.evolveum.polygon.connector.xpto.service.XptoUserService;
 import com.evolveum.polygon.connector.xpto.utils.ManageAttributes;
 import com.evolveum.polygon.connector.xpto.utils.XptoAttributesConstants;
 import org.identityconnectors.common.logging.Log;
+import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.objects.*;
 
 import java.util.Collection;
@@ -16,7 +17,7 @@ public class XptoUser extends XptoObject {
     private String first_name;
     private String last_name;
     private String email;
-    private String password;
+    private GuardedString password;
     private Boolean is_active;
 
     public int getUserId() {
@@ -51,11 +52,11 @@ public class XptoUser extends XptoObject {
         this.email = email;
     }
 
-    public String getPassword() {
+    public GuardedString getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(GuardedString password) {
         this.password = password;
     }
 
@@ -100,7 +101,7 @@ public class XptoUser extends XptoObject {
         user.setFirst_name(ManageAttributes.getAttributeValue(XptoAttributesConstants.XPTO_FIRST_NAME, String.class, attributes));
         user.setLast_name(ManageAttributes.getAttributeValue(XptoAttributesConstants.XPTO_LAST_NAME, String.class, attributes));
         user.setEmail(ManageAttributes.getAttributeValue(XptoAttributesConstants.XPTO_EMAIL, String.class, attributes));
-        user.setPassword(ManageAttributes.getAttributeValue(OperationalAttributes.PASSWORD_NAME, String.class, attributes));
+        user.setPassword(ManageAttributes.getAttributeValue(OperationalAttributes.PASSWORD_NAME, GuardedString.class, attributes));
         user.setIs_active(ManageAttributes.getAttributeValue(OperationalAttributes.ENABLE_NAME, Boolean.class, attributes));
         return user;
     }

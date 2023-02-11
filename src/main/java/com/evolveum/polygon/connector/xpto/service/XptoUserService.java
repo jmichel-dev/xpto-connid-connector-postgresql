@@ -19,27 +19,24 @@ public class XptoUserService {
 
     public XptoUserService(Connection connection) { this.connection = connection; }
 
-    public String create(XptoUser user) {
+    public String create(XptoUser user) throws SQLException {
         LOG.info("Starting insert of user {0} in database", user);
 
         String sql = "INSERT INTO users(first_name, last_name, email, password, is_active) VALUES(?, ?, ?, ?, ?)";
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, user.getFirst_name());
-            stmt.setString(2, user.getLast_name());
-            stmt.setString(3, user.getEmail());
-            StringAccessor accessor = new StringAccessor();
-            GuardedString pwd = user.getPassword();
-            pwd.access(accessor);
-            stmt.setString(4, accessor.getValue());
-            stmt.setBoolean(5, user.getIs_active());
-            stmt.execute();
 
-            return user.getEmail();
-        } catch (SQLException e) {
-            LOG.error("Failed to create user in the database, reason: " + e.getMessage());
-            throw new InvalidAttributeValueException("failed to create user, reason " + e.getMessage());
-        }
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, user.getFirst_name());
+        stmt.setString(2, user.getLast_name());
+        stmt.setString(3, user.getEmail());
+        StringAccessor accessor = new StringAccessor();
+        GuardedString pwd = user.getPassword();
+        pwd.access(accessor);
+        stmt.setString(4, accessor.getValue());
+        stmt.setBoolean(5, user.getIs_active());
+        stmt.execute();
+
+        return user.getEmail();
+
     }
 
     public List<XptoUser> search(String filter) throws SQLException {

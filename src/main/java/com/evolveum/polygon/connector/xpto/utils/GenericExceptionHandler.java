@@ -10,7 +10,7 @@ import java.net.SocketTimeoutException;
 import java.sql.SQLException;
 
 public class GenericExceptionHandler {
-    public void handleGenericException(Exception ex, String message) {
+    public static void handleGenericException(Exception ex, String message) {
 
 
         if ( ex instanceof ConnectorException || ex instanceof UnsupportedOperationException || ex instanceof IllegalArgumentException) {

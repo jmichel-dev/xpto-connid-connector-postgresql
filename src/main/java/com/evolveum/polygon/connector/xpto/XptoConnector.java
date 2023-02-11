@@ -101,7 +101,7 @@ public class XptoConnector implements Connector, TestOp, CreateOp, SearchOp<Filt
                 LOG.info("Started procedure for create user.");
                 LOG.info("Translating user...");
                 XptoUser user = XptoUser.translateUser(null, set);
-                LOG.info("User {0] translated successfully", user);
+                LOG.info("User {0} translated successfully", user);
                 LOG.info("Creating user in the target...");
                 uid = userService.create(user);
             } else {
@@ -111,7 +111,7 @@ public class XptoConnector implements Connector, TestOp, CreateOp, SearchOp<Filt
             LOG.ok("Created new object with the UID: {0}", uid);
             return new Uid(uid);
         } catch (Exception ex) {
-            new GenericExceptionHandler().handleGenericException(ex, "Couldn't create object " + objectClass + " with attributes " + set + ", reason: " + ex.getMessage());
+            GenericExceptionHandler.handleGenericException(ex, "Couldn't create object " + objectClass + " with attributes " + set + ", reason: " + ex.getMessage());
         }
 
         return null;

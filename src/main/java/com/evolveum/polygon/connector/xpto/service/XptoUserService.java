@@ -68,6 +68,32 @@ public class XptoUserService {
         return users;
     }
 
+    public XptoUser searchById(String uid) throws SQLException {
+        String sql = "SELECT * FROM users WHERE email ILIKE ?";
+        XptoUser user = new XptoUser();
+
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, uid);
+
+        ResultSet result = stmt.executeQuery();
+
+        if (result.next()) {
+            String firstName = result.getString("first_name");
+            String lastName = result.getString("last_name");
+            String email = result.getString("email");
+            Boolean isActive = result.getBoolean("is_active");
+
+            user.setEmail(email);
+            user.setLast_name(lastName);
+            user.setFirst_name(firstName);
+            user.setIs_active(isActive);
+            user.setName(email);
+            user.setId(email);
+        }
+
+        return user;
+    }
+
     public void delete(String uid) throws SQLException {
         String sql = "DELETE FROM users WHERE email ILIKE '" + uid + "'";
 

@@ -30,4 +30,28 @@ public class SearchTest extends BaseConnectionTest{
 
         AssertJUnit.assertEquals("jean.engenheirocomp@gmail.com", email);
     }
+
+    @Test(groups = "SearchTestOP")
+    public void shouldGetAllUsers() throws Exception {
+        ConnectorFacade facade = setupConnector();
+
+        ListResultHandler handler = new ListResultHandler();
+        facade.search(ObjectClass.ACCOUNT, null, handler, null);
+
+        List<ConnectorObject> objects = handler.getObjects();
+        AssertJUnit.assertTrue(handler.getObjects().size() > 0);
+    }
+
+    @Test(groups = "SearchTestOP")
+    public void shouldNotReturnAnNotExistentUserByEmail() throws Exception {
+        ConnectorFacade facade = setupConnector();
+
+        ListResultHandler handler = new ListResultHandler();
+        Attribute attr = AttributeBuilder.build(XptoAttributesConstants.XPTO_EMAIL, "test@example.com");
+        EqualsFilter filter = new EqualsFilter(attr);
+
+        facade.search(ObjectClass.ACCOUNT, filter, handler, null);
+
+        AssertJUnit.assertEquals(0, handler.getObjects().size());
+    }
 }

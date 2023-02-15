@@ -67,4 +67,11 @@ public class XptoUserService {
 
         return users;
     }
+
+    public void delete(String uid) throws SQLException {
+        String sql = "DELETE FROM users WHERE email ILIKE '" + uid + "'";
+
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.execute();
+    }
 }

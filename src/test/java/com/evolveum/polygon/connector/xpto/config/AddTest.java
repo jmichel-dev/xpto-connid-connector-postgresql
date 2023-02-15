@@ -18,7 +18,7 @@ public class AddTest extends BaseConnectionTest {
     private Uid createdUid;
     private static final String PASSWORD = "smartway";
 
-    @Test(groups = "Add Test")
+    @Test(groups = "AddOpTest")
     public void shouldCreateAnUserSuccessfully() throws Exception {
         ConnectorFacade facade = setupConnector();
 
@@ -35,7 +35,7 @@ public class AddTest extends BaseConnectionTest {
         AssertJUnit.assertEquals("jean.engenheirocomp@gmail.com", createdUid.getUidValue());
     }
 
-    @Test(groups = "Add Test", expectedExceptions = AlreadyExistsException.class)
+    @Test(groups = "AddOpTest", expectedExceptions = AlreadyExistsException.class)
     public void shouldNotCreateUserWithTheAnEmailThatAlreadyExists() throws Exception {
         ConnectorFacade facade = setupConnector();
 
@@ -50,7 +50,7 @@ public class AddTest extends BaseConnectionTest {
         createdUid = facade.create(ObjectClass.ACCOUNT, set, null);
     }
 
-    @Test(groups = "Add Test", expectedExceptions = InvalidAttributeValueException.class)
+    @Test(groups = "AddOpTest", expectedExceptions = InvalidAttributeValueException.class)
     public void shouldNotCreateUserWithoutAFirstName() throws Exception {
         ConnectorFacade facade = setupConnector();
 
@@ -64,7 +64,7 @@ public class AddTest extends BaseConnectionTest {
         createdUid = facade.create(ObjectClass.ACCOUNT, set, null);
     }
 
-    @Test(groups = "Add Test", expectedExceptions = InvalidAttributeValueException.class)
+    @Test(groups = "AddOpTest", expectedExceptions = InvalidAttributeValueException.class)
     public void shouldNotCreateUserWithoutTheNameId() throws Exception {
         ConnectorFacade facade = setupConnector();
 

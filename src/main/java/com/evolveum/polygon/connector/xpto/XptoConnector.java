@@ -31,6 +31,7 @@ import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.ConnectorClass;
 import org.identityconnectors.framework.spi.operations.CreateOp;
+import org.identityconnectors.framework.spi.operations.DeleteOp;
 import org.identityconnectors.framework.spi.operations.SearchOp;
 import org.identityconnectors.framework.spi.operations.TestOp;
 
@@ -41,7 +42,7 @@ import java.util.List;
 import java.util.Set;
 
 @ConnectorClass(displayNameKey = "xpto.connector.display", configurationClass = XptoConfiguration.class)
-public class XptoConnector implements Connector, TestOp, CreateOp, SearchOp<Filter> {
+public class XptoConnector implements Connector, TestOp, CreateOp, SearchOp<Filter>, DeleteOp {
 
     private static final Log LOG = Log.getLog(XptoConnector.class);
 
@@ -163,6 +164,21 @@ public class XptoConnector implements Connector, TestOp, CreateOp, SearchOp<Filt
             }
         } catch (Exception e) {
             GenericExceptionHandler.handleGenericException(e, "Couldn't search " + objectClass + " with filter " + query + ", reason: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void delete(ObjectClass objectClass, Uid uid, OperationOptions operationOptions) {
+        try {
+            if (ObjectClass.ACCOUNT.equals(objectClass)) {
+                userService.delete(uid.getUidValue());
+            } else {
+                throw new UnsupportedOperationException("Unknown object class " + objectClass);
+            }
+
+            LOG.ok("The object with the uid {0} was deleted by the connector instance.", uid);
+        } catch (Exception e) {
+            GenericExceptionHandler.handleGenericException(e, "Couldn't delete " + objectClass + " with the uid " + uid + ", reason: " + e.getMessage());
         }
     }
 }

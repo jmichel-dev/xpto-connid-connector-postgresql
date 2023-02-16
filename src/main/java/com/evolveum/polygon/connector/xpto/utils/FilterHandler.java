@@ -4,6 +4,8 @@ import com.evolveum.polygon.connector.xpto.XptoConnector;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeUtil;
+import org.identityconnectors.framework.common.objects.Name;
+import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.common.objects.filter.*;
 
 import java.util.List;
@@ -54,6 +56,10 @@ public class FilterHandler implements FilterVisitor<String, String> {
             String singleValue;
             String name = attr.getName();
             List<Object> value = attr.getValue();
+
+            if (Uid.NAME.equals(name) || Name.NAME.equals(name)) {
+                name = XptoAttributesConstants.XPTO_EMAIL;
+            }
 
             if (value != null && !value.isEmpty()) {
                 singleValue = AttributeUtil.getStringValue(attr);

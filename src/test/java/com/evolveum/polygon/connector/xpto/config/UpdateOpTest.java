@@ -68,4 +68,38 @@ public class UpdateOpTest extends BaseConnectionTest {
 
         facade.updateDelta(ObjectClass.ACCOUNT, new Uid(UID), attributeDeltas, null);
     }
+
+    @Test(groups = "UpdateTestOp")
+    public void shouldDisableEnableUser() throws Exception {
+        ConnectorFacade facade = setupConnector();
+
+        Set<AttributeDelta> attributeDeltas = new HashSet<>();
+
+        AttributeDeltaBuilder builder = new AttributeDeltaBuilder();
+        builder.setName(OperationalAttributes.ENABLE_NAME);
+        builder.addValueToReplace(false);
+
+        attributeDeltas.add(builder.build());
+
+        facade.updateDelta(ObjectClass.ACCOUNT, new Uid(UID), attributeDeltas, null);
+
+        ConnectorObject object = facade.getObject(ObjectClass.ACCOUNT, new Uid(UID), null);
+        Attribute attr = AttributeUtil.find(OperationalAttributes.ENABLE_NAME, object.getAttributes());
+
+        AssertJUnit.assertEquals(false, attr.getValue().get(0));
+
+        AttributeDeltaBuilder builder2 = new AttributeDeltaBuilder();
+        builder2.setName(OperationalAttributes.ENABLE_NAME);
+        builder2.addValueToReplace(true);
+
+        Set<AttributeDelta> attributeDeltas1 = new HashSet<>();
+        attributeDeltas1.add(builder2.build());
+
+        facade.updateDelta(ObjectClass.ACCOUNT, new Uid(UID), attributeDeltas1, null);
+
+        ConnectorObject objectEnable = facade.getObject(ObjectClass.ACCOUNT, new Uid(UID), null);
+        Attribute attrEnable = AttributeUtil.find(OperationalAttributes.ENABLE_NAME, objectEnable.getAttributes());
+
+        AssertJUnit.assertEquals(true, attrEnable.getValue().get(0));
+    }
 }

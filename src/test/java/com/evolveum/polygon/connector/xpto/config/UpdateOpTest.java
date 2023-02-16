@@ -1,6 +1,7 @@
 package com.evolveum.polygon.connector.xpto.config;
 
 import com.evolveum.polygon.connector.xpto.utils.XptoAttributesConstants;
+import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.api.ConnectorFacade;
 import org.identityconnectors.framework.common.objects.*;
 import org.testng.AssertJUnit;
@@ -51,5 +52,20 @@ public class UpdateOpTest extends BaseConnectionTest {
         Attribute attr = AttributeUtil.find(XptoAttributesConstants.XPTO_LAST_NAME, object.getAttributes());
 
         AssertJUnit.assertEquals("Silva", attr.getValue().get(0));
+    }
+
+    @Test(groups = "UpdateTestOp")
+    public void shouldUpdateUsersPassword() throws Exception {
+        ConnectorFacade facade = setupConnector();
+
+        Set<AttributeDelta> attributeDeltas = new HashSet<>();
+
+        AttributeDeltaBuilder builder = new AttributeDeltaBuilder();
+        builder.setName(OperationalAttributes.PASSWORD_NAME);
+        builder.addValueToReplace(new GuardedString("smartway123".toCharArray()));
+
+        attributeDeltas.add(builder.build());
+
+        facade.updateDelta(ObjectClass.ACCOUNT, new Uid(UID), attributeDeltas, null);
     }
 }

@@ -3,6 +3,8 @@ package com.evolveum.polygon.connector.xpto.config;
 import com.evolveum.polygon.connector.xpto.utils.XptoAttributesConstants;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.api.ConnectorFacade;
+import org.identityconnectors.framework.common.exceptions.ConnectorException;
+import org.identityconnectors.framework.common.exceptions.InvalidAttributeValueException;
 import org.identityconnectors.framework.common.objects.*;
 import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
@@ -101,5 +103,21 @@ public class UpdateOpTest extends BaseConnectionTest {
         Attribute attrEnable = AttributeUtil.find(OperationalAttributes.ENABLE_NAME, objectEnable.getAttributes());
 
         AssertJUnit.assertEquals(true, attrEnable.getValue().get(0));
+    }
+
+    @Test(groups = "UpdateTestOp", expectedExceptions = ConnectorException.class)
+    public void shouldNotRemoveEmailAttributeFromResource() throws Exception {
+        ConnectorFacade facade = setupConnector();
+
+        Set<AttributeDelta> attributeDeltas = new HashSet<>();
+
+        AttributeDeltaBuilder builder = new AttributeDeltaBuilder();
+        builder.setName(XptoAttributesConstants.XPTO_EMAIL);
+        builder.addValueToRemove(UID);
+
+        attributeDeltas.add(builder.build());
+
+        facade.updateDelta(ObjectClass.ACCOUNT, new Uid(UID), attributeDeltas, null);
+
     }
 }

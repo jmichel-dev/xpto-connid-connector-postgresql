@@ -112,14 +112,27 @@ public class XptoUserService {
         stmt.setBoolean(4, user.getIs_active());
         stmt.setString(5, user.getEmail());
 
-        // TODO: TROCA DE SSENHA
-        // Tratar senha nula
-        /*StringAccessor accessor = new StringAccessor();
-        GuardedString pwd = user.getPassword();
-        pwd.access(accessor);
-        stmt.setString(4, accessor.getValue());*/
+        if (user.getPassword() != null) {
+            changePassword(user);
+        }
 
         int output = stmt.executeUpdate();
         return user.getEmail();
+    }
+
+    private void changePassword(XptoUser user) throws SQLException {
+        LOG.info("Starting change password of user {0} in database", user);
+
+        String sql = "UPDATE users SET password = ? WHERE email ILIKE ?";
+
+        PreparedStatement stmt = connection.prepareStatement(sql);
+
+        StringAccessor accessor = new StringAccessor();
+        GuardedString pwd = user.getPassword();
+        pwd.access(accessor);
+        stmt.setString(1, accessor.getValue());
+        stmt.setString(2, user.getEmail());
+
+        stmt.executeUpdate();
     }
 }

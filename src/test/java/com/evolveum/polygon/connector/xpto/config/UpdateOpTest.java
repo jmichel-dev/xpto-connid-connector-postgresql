@@ -32,4 +32,24 @@ public class UpdateOpTest extends BaseConnectionTest {
 
         AssertJUnit.assertEquals("Joao", attr.getValue().get(0));
     }
+
+    @Test(groups = "UpdateTestOp")
+    public void shouldUpdateUserLastName() throws Exception {
+        ConnectorFacade facade = setupConnector();
+
+        Set<AttributeDelta> attributeDeltas = new HashSet<>();
+
+        AttributeDeltaBuilder builder = new AttributeDeltaBuilder();
+        builder.setName(XptoAttributesConstants.XPTO_LAST_NAME);
+        builder.addValueToReplace("Silva");
+
+        attributeDeltas.add(builder.build());
+
+        facade.updateDelta(ObjectClass.ACCOUNT, new Uid(UID), attributeDeltas, null);
+
+        ConnectorObject object = facade.getObject(ObjectClass.ACCOUNT, new Uid(UID), null);
+        Attribute attr = AttributeUtil.find(XptoAttributesConstants.XPTO_LAST_NAME, object.getAttributes());
+
+        AssertJUnit.assertEquals("Silva", attr.getValue().get(0));
+    }
 }
